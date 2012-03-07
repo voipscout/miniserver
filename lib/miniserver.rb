@@ -6,9 +6,6 @@ module MiniServer
   class Server
     include Celluloid::IO
 
-    NAME = 'MiniServer'
-    VERSION = '0.1'
-
     def initialize(host, port, app)
       @server = TCPServer.new(host, port)
       @server.to_io.do_not_reverse_lookup = true
@@ -20,7 +17,7 @@ module MiniServer
     def self.run(app, options = {})
       server = new(options[:host] || '0.0.0.0', options[:port] || 8080, app)
       puts ">> Using Rack adapter"
-      puts ">> #{NAME} v#{VERSION}"
+      puts ">> Celluloid::IO MiniServer 0.1"
       puts ">> Listening on #{options[:host] || '0.0.0.0'}:#{options[:port] || 8080}, CTRL+C to stop"
       sleep
     rescue SystemExit, Interrupt
@@ -41,7 +38,7 @@ module MiniServer
       env = parser.env
 
       env.update 'REMOTE_ADDR'       => socket.peeraddr.last,
-                 'SERVER_SOFTWARE'   => NAME,
+                 'SERVER_SOFTWARE'   => "Celluloid::IO MiniServer",
                  'GATEWAY_INTERFACE' => 'CGI/1.2',
                  'SERVER_PROTOCOL'   => 'HTTP/1.1'
 
@@ -80,6 +77,7 @@ end
 
 # @private
 # :nodoc:
+# Taken from Zed Shaw's Mongrel
 class TCPServer
   def initialize_with_backlog(*args)
     initialize_without_backlog(*args)
